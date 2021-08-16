@@ -1,0 +1,60 @@
+{
+    "name": "darshithedpara/laravel-aws-cloud-watch-logger",
+    "description": "This package is capable to log all your activities and SQL queries to AWS Cloud Watch.",
+    "keywords": [
+        "darshithedpara",
+        "laravel-aws-cloud-watch-logger"
+    ],
+    "homepage": "https://github.com/darshithedpara/laravel-aws-cloud-watch-logger",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Darshit Hedpara",
+            "email": "darshithedpara@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "illuminate/support": "^8.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.0",
+        "nunomaduro/collision": "^5.3",
+        "phpunit/phpunit": "^9.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Darshithedpara\\LaravelAwsCloudWatchLogger\\": "src"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Darshithedpara\\LaravelAwsCloudWatchLogger\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Darshithedpara\\LaravelAwsCloudWatchLogger\\LaravelAwsCloudWatchLoggerServiceProvider"
+            ],
+            "aliases": {
+                "LaravelAwsCloudWatchLogger": "Darshithedpara\\LaravelAwsCloudWatchLogger\\Facades\\LaravelAwsCloudWatchLogger"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
