@@ -51,13 +51,31 @@ return [
 php :
 $laravelAwsCloudWatchLogger = new Darshithedpara\LaravelAwsCloudwatchLogger();
 echo $laravelAwsCloudWatchLogger->check();
+echo $laravelAwsCloudWatchLogger->setStore($store)
+                                ->setTitle('test')
+                                ->setModule(\Darshithedpara\LaravelAwsCloudWatchLogger\Types\Modules::ORDER)
+                                ->setOperation(\Darshithedpara\LaravelAwsCloudWatchLogger\Types\Operations::CREATE)
+                                ->setData(["order_id" => 1])
+                                ->info();
 
 laravel facade :
 use Darshithedpara\LaravelAwsCloudWatchLogger\Facades\LaravelAwsCloudWatchLogger;
-dd(LaravelAwsCloudWatchLogger::check())
+LaravelAwsCloudWatchLogger::check()
+LaravelAwsCloudWatchLogger::setStore($store)
+                          ->setTitle('test')
+                          ->setModule(\Darshithedpara\LaravelAwsCloudWatchLogger\Types\Modules::ORDER)
+                          ->setOperation(\Darshithedpara\LaravelAwsCloudWatchLogger\Types\Operations::CREATE)
+                          ->setData(["order_id" => 1])
+                          ->info();
 
 laravel helper :
-dd(laravelAwsCloudwatchLogger()->check()); 
+laravelAwsCloudwatchLogger()->check()
+laravelAwsCloudwatchLogger()->setStore($store)
+                            ->setTitle('test')
+                            ->setModule(\Darshithedpara\LaravelAwsCloudWatchLogger\Types\Modules::ORDER)
+                            ->setOperation(\Darshithedpara\LaravelAwsCloudWatchLogger\Types\Operations::CREATE)
+                            ->setData(["order_id" => 1])
+                            ->info();
 ```
 
 ## Testing

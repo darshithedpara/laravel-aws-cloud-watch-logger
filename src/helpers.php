@@ -1,5 +1,5 @@
 <?php
-if (! function_exists('laravelAwsCloudWatchLogger')) {
+if (!function_exists('laravelAwsCloudWatchLogger')) {
     /**
      * Access SmsManager through helper.
      * @return Darshithedpara\LaravelAwsCloudWatchLogger\LaravelAwsCloudWatchLogger
@@ -9,4 +9,3 @@ if (! function_exists('laravelAwsCloudWatchLogger')) {
         return app('laravel-aws-cloud-watch-logger');
     }
 }
-?>

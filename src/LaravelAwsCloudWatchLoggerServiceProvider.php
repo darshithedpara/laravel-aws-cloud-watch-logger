@@ -2,6 +2,7 @@
 
 namespace Darshithedpara\LaravelAwsCloudWatchLogger;
 
+use Darshithedpara\LaravelAwsCloudWatchLogger\Commands\CloudWatchConfigPublishCommand;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelAwsCloudWatchLoggerServiceProvider extends ServiceProvider
@@ -13,11 +14,12 @@ class LaravelAwsCloudWatchLoggerServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/config.php' => config_path('laravel-aws-cloud-watch-logger.php'),
-            ], 'config');
-
+                __DIR__ . '/../config/cloudwatch.php' => config_path('cloudwatch.php'),
+            ], 'cloudwatch-config');
             // Registering package commands.
-            // $this->commands([]);
+            $this->commands([
+                CloudWatchConfigPublishCommand::class,
+            ]);
         }
     }
 
@@ -27,10 +29,9 @@ class LaravelAwsCloudWatchLoggerServiceProvider extends ServiceProvider
     public function register()
     {
         // Automatically apply the package configuration
-        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'laravel-aws-cloud-watch-logger');
-
+        $this->mergeConfigFrom(__DIR__ . '/../config/cloudwatch.php', 'cloudwatch');
         // Register the main class to use with the facade
-        $this->app->bind('laravel-aws-cloud-watch-logger', function () {
+        $this->app->singleton('laravel-aws-cloud-watch-logger', function () {
             return new LaravelAwsCloudWatchLogger;
         });
     }
