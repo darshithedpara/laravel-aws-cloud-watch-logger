@@ -30,7 +30,7 @@ class LaravelAwsCloudWatchLoggerServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'laravel-aws-cloud-watch-logger');
 
         // Register the main class to use with the facade
-        $this->app->singleton('laravel-aws-cloud-watch-logger', function () {
+        $this->app->bind('laravel-aws-cloud-watch-logger', function () {
             return new LaravelAwsCloudWatchLogger;
         });
     }
