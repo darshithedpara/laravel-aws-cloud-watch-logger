@@ -17,12 +17,12 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "illuminate/support": "^8.0"
-    },
-    "require-dev": {
+        "illuminate/support": "^8.0",
         "nunomaduro/collision": "^5.3",
         "pestphp/pest": "^1.15",
         "phpunit/phpunit": "^9.3"
+    },
+    "require-dev": {
     },
     "autoload": {
         "psr-4": {
