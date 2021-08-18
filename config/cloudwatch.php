@@ -84,7 +84,7 @@ return [
          * You can disable the logs here...
          *  Note : If you set true value then all the drivers won't able to send/write the logs
         */
-        'disabled'            => env('DISABLE_CLOUDWATCH_LOG', false),
+        'disabled'     => env('DISABLE_CLOUDWATCH_LOG', false),
     ],
     /*
     |--------------------------------------------------------------------------

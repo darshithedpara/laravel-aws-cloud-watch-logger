@@ -24,10 +24,6 @@ class FileDriver extends Driver
     public function dispatch(string $type, string $title)
     {
         $payload = $this->preparePayload();
-        Log::info($title.' => '.implode('|',$this->tags).PHP_EOL.
-           '-------------------------------'.PHP_EOL.
-           json_encode($payload, JSON_PRETTY_PRINT).PHP_EOL.
-           '-------------------------------'.PHP_EOL
-       );
+        Log::info($title . ' => ' . implode('|', $this->tags) . PHP_EOL . '-------------------------------' . PHP_EOL . json_encode($payload, JSON_PRETTY_PRINT) . PHP_EOL . '-------------------------------' . PHP_EOL);
     }
 }

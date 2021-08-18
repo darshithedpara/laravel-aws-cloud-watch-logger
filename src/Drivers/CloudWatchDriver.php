@@ -53,7 +53,6 @@ class CloudWatchDriver extends Driver
             $this->logger->$type($title, $payload);
         }
         catch (\Exception $e) {
-            dd($e);
             return false;
         }
     }
