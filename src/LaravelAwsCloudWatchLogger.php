@@ -4,17 +4,16 @@ namespace Darshithedpara\LaravelAwsCloudWatchLogger;
 
 use Darshithedpara\LaravelAwsCloudWatchLogger\Contracts\Driver;
 use Darshithedpara\LaravelAwsCloudWatchLogger\Traits\Checkable;
+use Darshithedpara\LaravelAwsCloudWatchLogger\Traits\Dispatchers;
 use Darshithedpara\LaravelAwsCloudWatchLogger\Types\Modules;
 use Darshithedpara\LaravelAwsCloudWatchLogger\Types\Operations;
 use Illuminate\Database\Eloquent\Model;
-use Maxbanton\Cwh\Handler\CloudWatch;
-use Aws\CloudWatchLogs\CloudWatchLogsClient;
 use Monolog\Logger;
 use ReflectionClass;
 
 class LaravelAwsCloudWatchLogger
 {
-    use Checkable;
+    use Checkable, Dispatchers;
 
     protected array $config;
 
@@ -65,12 +64,17 @@ class LaravelAwsCloudWatchLogger
     }
 
     /**
-     * @param string $level
+     * @param int $level
      * @return $this
      */
-    public function logLevel(string $level): LaravelAwsCloudWatchLogger
+    public function setLogLevel(int $level): LaravelAwsCloudWatchLogger
     {
-        $this->settings['log_level'] = Logger::$$level;
+        $reflect = new ReflectionClass(Logger::class);
+        if (!isset(array_flip($reflect->getConstants())[$level])) {
+            throw new \Exception('LogLevel must be an constant of \Monolog\Logger::class.');
+        }
+        $constName = array_flip($reflect->getConstants())[$level];
+        $this->settings['log_level'] = $reflect->getConstant($constName);
         return $this;
     }
 
@@ -163,16 +167,25 @@ class LaravelAwsCloudWatchLogger
         return $this;
     }
 
-
     public function setModule(string $module): LaravelAwsCloudWatchLogger
     {
-        $this->module = $module;
+        $reflect = new ReflectionClass(Modules::class);
+        if (!isset(array_flip($reflect->getConstants())[$module])) {
+            throw new \Exception('Module not supported please check \Darshithedpara\LaravelAwsCloudWatchLogger\Types\Operations::class.');
+        }
+        $constName = array_flip($reflect->getConstants())[$module];
+        $this->module = $reflect->getConstant($constName);
         return $this;
     }
 
-    public function setOperation(string  $operation): LaravelAwsCloudWatchLogger
+    public function setOperation(string $operation): LaravelAwsCloudWatchLogger
     {
-        $this->operation = $operation;
+        $reflect = new ReflectionClass(Operations::class);
+        if (!isset(array_flip($reflect->getConstants())[$operation])) {
+            throw new \Exception('Operation not supported please check \Darshithedpara\LaravelAwsCloudWatchLogger\Types\Operations::class.');
+        }
+        $constName = array_flip($reflect->getConstants())[$operation];
+        $this->operation = $reflect->getConstant($constName);
         return $this;
     }
 
@@ -198,44 +211,7 @@ class LaravelAwsCloudWatchLogger
     {
         $this->validateDriver();
         $class = $this->config['map'][$this->driver];
-        return new $class($this->settings);
-    }
-
-    public function info()
-    {
-        $this->dispatch('info');
-    }
-    public function warning()
-    {
-        $this->dispatch('warning');
-    }
-    public function error()
-    {
-        $this->dispatch('error');
-    }
-    public function log()
-    {
-        $this->dispatch('log');
-    }
-    public function alert()
-    {
-        $this->dispatch('alert');
-    }
-    public function critical()
-    {
-        $this->dispatch('critical');
-    }
-    public function debug()
-    {
-        $this->dispatch('debug');
-    }
-    public function emergency()
-    {
-        $this->dispatch('emergency');
-    }
-    public function notice()
-    {
-        $this->dispatch('notice');
+        return new $class($this->settings, $this->config['options']);
     }
 
     /**
@@ -244,24 +220,21 @@ class LaravelAwsCloudWatchLogger
     public function dispatch(string $type)
     {
         $conditions = [
-            'Module can not be empty.'                             => empty($this->module),
-            'Operation can not be empty.'                             => empty($this->operation),
-            'Store can not be empty.'                             => empty($this->store),
-            'Data can not be empty.'                             => empty($this->data),
-            'Store must be an instance of Model class.'                             => !($this->store instanceof Model),
-
+            'Module can not be empty.'                  => empty($this->module),
+            'Operation can not be empty.'               => empty($this->operation),
+            'Store can not be empty.'                   => empty($this->store),
+            'Data can not be empty.'                    => empty($this->data),
+            'Store must be an instance of Model class.' => !($this->store instanceof Model),
         ];
         foreach ($conditions as $ex => $condition) {
             throw_if($condition, new \Exception($ex));
         }
         $driver = $this->getDriverInstance();
-        $driver->setTags($this->tags);
         $driver->setTitle($this->title);
         $driver->setData($this->data);
         $driver->setStore($this->store);
         $driver->setModule($this->module);
         $driver->setOperation($this->operation);
-        dd($driver->preparePayload());
-        return $driver->dispatch($type);
+        return $driver->dispatch($type, $this->title, $this->tags);
     }
 }

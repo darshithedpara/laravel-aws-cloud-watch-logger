@@ -3,7 +3,7 @@
 namespace Darshithedpara\LaravelAwsCloudWatchLogger\Drivers;
 
 use Darshithedpara\LaravelAwsCloudWatchLogger\Contracts\Driver;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  *
@@ -11,15 +11,23 @@ use Illuminate\Database\Eloquent\Model;
 class FileDriver extends Driver
 {
     protected array $settings;
+    protected array $options;
+    protected array $tags;
 
-    public function __construct(array $settings)
+    public function __construct(array $settings, array $options, array $tags = [])
     {
         $this->settings = $settings;
+        $this->options = $options;
+        $this->tags = $tags;
     }
 
     public function dispatch(string $type, string $title)
     {
-        $data2 = $this->preparePayload();
-        dd($data2);
+        $payload = $this->preparePayload();
+        Log::info($title.' => '.implode('|',$this->tags).PHP_EOL.
+           '-------------------------------'.PHP_EOL.
+           json_encode($payload, JSON_PRETTY_PRINT).PHP_EOL.
+           '-------------------------------'.PHP_EOL
+       );
     }
 }

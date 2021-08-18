@@ -4,7 +4,6 @@ namespace Darshithedpara\LaravelAwsCloudWatchLogger\Drivers;
 
 use Aws\CloudWatchLogs\CloudWatchLogsClient;
 use Darshithedpara\LaravelAwsCloudWatchLogger\Contracts\Driver;
-use Illuminate\Database\Eloquent\Model;
 use Maxbanton\Cwh\Handler\CloudWatch;
 use Monolog\Logger;
 
@@ -12,20 +11,27 @@ class CloudWatchDriver extends Driver
 {
 
     protected array $settings;
+    protected array $options;
+    protected array $tags;
+    protected Logger $logger;
 
-    public function __construct(array $settings)
+    public function __construct(array $settings, array $options, array $tags = [])
     {
         $this->settings = $settings;
+        $this->options = $options;
+        $this->tags = $tags;
+        $this->logger = $this->getLogger();
     }
 
     /**
      * @return false|Logger
      */
-    protected function getLogger(){
+    protected function getLogger()
+    {
         try {
             $client = new CloudWatchLogsClient($this->settings['credential']);
             $handler = new CloudWatch($client, $this->settings['log_group'], $this->settings['log_stream'], $this->settings['retention'], $this->settings['batch_size'], $this->tags, $this->settings['log_level']);
-            $logger = new Logger($this->settings['project_name']);
+            $logger = new Logger($this->options['project_name']);
             $logger->pushHandler($handler);
             return $logger;
         }
@@ -39,10 +45,15 @@ class CloudWatchDriver extends Driver
      */
     public function dispatch(string $type, string $title)
     {
+        if ($this->options['disabled'] == true) {
+            return;
+        }
         try {
-            $this->getLogger()->$$type($title);
+            $payload = $this->preparePayload();
+            $this->logger->$type($title, $payload);
         }
         catch (\Exception $e) {
+            dd($e);
             return false;
         }
     }
