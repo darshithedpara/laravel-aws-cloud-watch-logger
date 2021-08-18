@@ -211,7 +211,7 @@ class LaravelAwsCloudWatchLogger
     {
         $this->validateDriver();
         $class = $this->config['map'][$this->driver];
-        return new $class($this->settings, $this->config['options']);
+        return new $class($this->settings, $this->config['options'], $this->tags);
     }
 
     /**
@@ -235,6 +235,6 @@ class LaravelAwsCloudWatchLogger
         $driver->setStore($this->store);
         $driver->setModule($this->module);
         $driver->setOperation($this->operation);
-        return $driver->dispatch($type, $this->title, $this->tags);
+        return $driver->dispatch($type, $this->title);
     }
 }

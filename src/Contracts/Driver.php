@@ -30,7 +30,7 @@ abstract class Driver
      * Driver constructor.
      * @param array $settings
      */
-    abstract public function __construct(array $settings, array $options);
+    abstract public function __construct(array $settings, array $options, array $tags);
 
     abstract public function dispatch(string $type, string $title);
 }
